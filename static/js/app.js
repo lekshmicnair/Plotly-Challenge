@@ -8,14 +8,10 @@ function makePlot(id){
     d3.json("./data/samples.json").then((data)=>{
         console.log(data);
 
-        //variable to store washing frequency
-        var wfreq =data.metadata.map(d => d.wfreq);
-        console.log (`Washing frequecy ${wfreq}`);
-
         //filter by id
         var samples=data.samples.filter(s => s.id.toString() === id)[0];
         console.log(samples);
-
+        
 //BAR CHART
         //get top 10 sample_values
         var sample_top= samples.sample_values.slice(0,10).reverse();
@@ -32,7 +28,7 @@ function makePlot(id){
         console.log(`LABELS: ${labels}`);
 
         //create trace for the bar chart
-        var trace = {
+        var trace_a = {
             x: sample_top,
             y: OTU_id,
             text: labels,
@@ -42,11 +38,11 @@ function makePlot(id){
             orientation: "h",
         };
         // create data variable for bar chart
-        var data = [trace];
+        var data_a = [trace_a];
 
         // create layout variable to set plots layout
-        var layout = {
-            title: "Top 10 OTU",
+        var layout_a = {
+            title: "Top Ten OTU",
             yaxis:{
                 tickmode:"linear",
             },
@@ -59,7 +55,7 @@ function makePlot(id){
         };
     
         //create the bar chart
-        Plotly.newPlot("bar", data, layout);
+        Plotly.newPlot("bar", data_a, layout_a);
 
 
 //BUBBLE CHART
@@ -91,6 +87,14 @@ function makePlot(id){
         Plotly.newPlot("bubble", data_b, layout_b); 
 
 // BONUS - GAUGE CHART
+    // filter meta data info by id
+    var metadata = data.metadata;
+    var result = metadata.filter(meta => meta.id.toString() === id)[0];
+    console.log(`Result: ${result}`)
+    //variable to store washing frequency
+    var wfreq =result.wfreq;
+    console.log (`Washing frequecy ${wfreq}`);
+
         var data_g = [
           {
           domain: { x: [0, 1], y: [0, 1] },
@@ -113,7 +117,8 @@ function makePlot(id){
         var layout_g = { 
             width: 600, 
             height: 600, 
-            margin: { t: 20, b: 40, l:100, r:100 } 
+            margin: { t: 20, b: 40, l:100, r:100 },
+            font: { color: "darkblue", family: "Arial" } 
           };
         Plotly.newPlot("gauge", data_g, layout_g);
 
